@@ -1,0 +1,63 @@
+@startuml
+class Inventory_App{
+    main()
+    start()
+}
+
+class AppController{
+    - inventoryTableView: TableView
+    - serialNumberColumn: TableColumn
+    - nameColumn: TableColumn
+    - valueColumn: TableColumn
+    - addSerialNumberDisplay: TextField
+    - addItemNameDisplay: TextField
+    - addItemValueDisplay: TextField
+    - editValueDisplay: TextField
+    - editSerialNumberDisplay: TextField
+    - editNameDisplay: TextField
+    - searchDisplay: TextField
+    - pathDisplay: TextField
+    - TSVCheckbox: Checkbox
+    - HTMLCheckbox: Checkbox
+    - JSONCheckbox: Checkbox
+
+    + addItemButtonClicked()
+    + editItemClicked()
+    + searchSerialNumberClicked()
+    + searchNameClicked()
+    + saveFileClicked()
+    + loadFileClicked()
+    + deleteItemClicked()
+
+    + addItem()
+    + editItem()
+    + searchSerialNumber()
+    + searchName()
+    + saveJSON()
+    + saveHTML()
+    + saveTSV()
+    + loadJSON()
+    + loadHTML()
+    + loadTSV()
+    + deleteItem()
+
+}
+
+class Item{
+    value: Float
+    serialNumber: String
+    name: String
+
+    +getValue()
+    +setValue()
+    +getSerialNumber()
+    +setSerialNumber()
+    +getName()
+    +setName()
+}
+
+org.javafx.App -- Inventory_App
+Inventory_App -- AppController
+AppController <- Item
+
+@enduml
