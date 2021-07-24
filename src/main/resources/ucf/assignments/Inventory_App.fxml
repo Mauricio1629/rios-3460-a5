@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="596.0" prefWidth="812.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ucf.assignments.Inventory_Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="628.0" prefWidth="881.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ucf.assignments.Inventory_Controller">
    <center>
       <TableView fx:id="inventoryTableView" onMouseClicked="#itemClicked" BorderPane.alignment="CENTER">
         <columns>
@@ -29,29 +29,29 @@
                <padding>
                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
-               <TextField fx:id="editValueDisplay" />
-               <TextField fx:id="editSerialNumberDisplay" />
-               <TextField fx:id="editNameDisplay" />
-               <Button mnemonicParsing="false" onAction="#editItemClicked" text="Edit Selected Item" />
+               <TextField fx:id="editValueDisplay" prefHeight="26.0" prefWidth="190.0" promptText="Click" />
+               <TextField fx:id="editSerialNumberDisplay" prefHeight="26.0" prefWidth="190.0" promptText="An" />
+               <TextField fx:id="editNameDisplay" prefHeight="26.0" prefWidth="190.0" promptText="Item" />
+               <Button mnemonicParsing="false" onAction="#editItemClicked" prefHeight="26.0" prefWidth="257.0" text="Edit Selected Item" />
            </HBox>
            <HBox spacing="15.0">
                <padding>
                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
-               <TextField fx:id="searchDisplay" promptText="Input Search Here" />
-               <Button mnemonicParsing="false" onAction="#searchSerialNumberClicked" text="Search Serial Number" />
-               <Button mnemonicParsing="false" onAction="#searchNameClicked" text="Search Name" />
-            <Button mnemonicParsing="false" onAction="#viewAllInventoryClicked" text="View All Inventory">
+               <TextField fx:id="searchDisplay" prefHeight="26.0" prefWidth="190.0" promptText="Input Search Here" />
+               <Button mnemonicParsing="false" onAction="#searchSerialNumberClicked" prefHeight="26.0" prefWidth="160.0" text="Search By Serial Number" />
+               <Button mnemonicParsing="false" onAction="#searchNameClicked" prefHeight="26.0" prefWidth="117.0" text="Search By Name" />
+            <Button mnemonicParsing="false" onAction="#viewAllInventoryClicked" prefHeight="26.0" prefWidth="257.0" text="View All Inventory">
                <HBox.margin>
-                  <Insets left="93.0" />
+                  <Insets left="103.0" />
                </HBox.margin>
             </Button>
            </HBox>
-           <HBox spacing="30.0">
+           <HBox spacing="38.0">
                <padding>
                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
-               <TextField fx:id="pathDisplay" prefHeight="26.0" prefWidth="343.0" promptText="Input Path To Save Or Load" />
+               <TextField fx:id="pathDisplay" prefHeight="26.0" prefWidth="378.0" promptText="Input Path To Save Or Load" />
                <CheckBox fx:id="TSVCheckbox" mnemonicParsing="false" text="TSV" />
                <CheckBox fx:id="HTMLCheckbox" mnemonicParsing="false" text="HTML" />
                <CheckBox fx:id="JSONCheckbox" mnemonicParsing="false" text="JSON" />
@@ -70,13 +70,13 @@
             <padding>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
-            <TextField fx:id="addItemValueDisplay" promptText="Item Value" />
-            <TextField fx:id="addSerialNumberDisplay" promptText="Item Serial Number" />
-            <TextField fx:id="addItemNameDisplay" promptText="Item Name" />
+            <TextField fx:id="addItemValueDisplay" prefHeight="26.0" prefWidth="190.0" promptText="Item Value" />
+            <TextField fx:id="addSerialNumberDisplay" prefHeight="26.0" prefWidth="190.0" promptText="Item Serial Number" />
+            <TextField fx:id="addItemNameDisplay" prefHeight="26.0" prefWidth="190.0" promptText="Item Name" />
             <Button mnemonicParsing="false" onAction="#addItemButtonClicked" text="Add Item" />
             <Button mnemonicParsing="false" onAction="#deleteItemClicked" text="Delete Selected Item">
             <HBox.margin>
-               <Insets left="55.0" />
+               <Insets left="36.0" />
             </HBox.margin>
          </Button>
          <BorderPane.margin>

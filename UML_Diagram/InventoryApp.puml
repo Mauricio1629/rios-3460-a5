@@ -28,6 +28,7 @@ class AppController{
     + saveFileClicked()
     + loadFileClicked()
     + deleteItemClicked()
+    + itemClicked()
 
     + addItem()
     + editItem()
@@ -40,6 +41,13 @@ class AppController{
     + loadHTML()
     + loadTSV()
     + deleteItem()
+    + addToObservableList()
+    + checkName()
+    + checkSerialNumber()
+    + checkValue()
+    + clearDisplays()
+    + formatString()
+    + viewAllInventoryClicked()
 
 }
 

@@ -6,25 +6,27 @@ package ucf.assignments;
 
 public class Item {
     //initialize float value
-    public Float value;
+    public String value;
     //initialize string serialNumber
     public String serialNumber;
     //initialize string name
     public String name;
 
     //declare constructor with value, serialNumber, and name
-    public Item(Float value, String serialNumber, String name) {
+    public Item(String value, String serialNumber, String name) {
         this.value = value;
         this.serialNumber = serialNumber;
         this.name = name;
     }
 
     // create all getters and setters
-    public Float getValue() {
+
+
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Float value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
