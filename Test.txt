@@ -1,0 +1,4 @@
+Value	Serial Number	Name
+$12.13	A1S2D3F4G5	Xbox
+$70.00	J5H4G3K2L1	PS5
+$100.23	LPO0987UJH	Switch

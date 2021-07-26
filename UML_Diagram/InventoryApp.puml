@@ -17,9 +17,9 @@ class AppController{
     - editNameDisplay: TextField
     - searchDisplay: TextField
     - pathDisplay: TextField
-    - TSVCheckbox: Checkbox
-    - HTMLCheckbox: Checkbox
-    - JSONCheckbox: Checkbox
+    - TSVRadioButton: RadioButton
+    - HTMLRadioButton: RadioButton
+    - Group: ToggleGroup
 
     + addItemButtonClicked()
     + editItemClicked()
@@ -34,10 +34,8 @@ class AppController{
     + editItem()
     + searchSerialNumber()
     + searchName()
-    + saveJSON()
     + saveHTML()
     + saveTSV()
-    + loadJSON()
     + loadHTML()
     + loadTSV()
     + deleteItem()
@@ -52,7 +50,7 @@ class AppController{
 }
 
 class Item{
-    value: Float
+    value: String
     serialNumber: String
     name: String
 

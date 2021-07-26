@@ -6,6 +6,7 @@ package ucf.assignments;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -334,7 +335,7 @@ class Inventory_ControllerTest {
     }
 
     @Test
-    void TestingFormatingAStringThatHasTooManyDecimals() {
+    void TestingFormattingAStringThatHasTooManyDecimals() {
         Inventory_Controller TC = new Inventory_Controller();
         // declare input string that will be formatted
         String inputString = "15.49345";
@@ -347,7 +348,7 @@ class Inventory_ControllerTest {
     }
 
     @Test
-    void TestingFormatingAStringThatHasNoDecimals() {
+    void TestingFormattingAStringThatHasNoDecimals() {
         Inventory_Controller TC = new Inventory_Controller();
         // declare input string that will be formatted
         String inputString = "40";
@@ -357,5 +358,161 @@ class Inventory_ControllerTest {
         String output = TC.formatString(inputString);
         // assert equals for expected and output
         assertEquals(expected, output);
+    }
+
+    @Test
+    void TestingSavingInTSVFormat() {
+        Inventory_Controller TC = new Inventory_Controller();
+        // Create items to add to our global list
+        Item item1 = new Item("10","H5J4K3L298","Water");
+        Item item2 = new Item("20","PO0987UJHY","Planet");
+        Item item3 = new Item("24.99","MN9843MK45","Infinity Stone");
+        Item item4 = new Item("25","H1K5V6K3M7","DogeCoin");
+
+        // Add the items to the list
+        TC.InventoryList.add(item1);
+        TC.InventoryList.add(item2);
+        TC.InventoryList.add(item3);
+        TC.InventoryList.add(item4);
+
+        // create expected string
+        String expected = """
+                Value\tSerial Number\tName
+                10\tH5J4K3L298\tWater
+                20\tPO0987UJHY\tPlanet
+                24.99\tMN9843MK45\tInfinity Stone
+                25\tH1K5V6K3M7\tDogeCoin""";
+
+        // call method which returns the Inventory List as a string
+        String output = TC.saveTSV();
+        // Assert expected and output equals
+        assertEquals(expected,output);
+    }
+
+    @Test
+    void TestingLoadingInTSVFormat() throws IOException {
+        Inventory_Controller TC = new Inventory_Controller();
+        // Created expected ArrayList to compare with global list when loaded
+        ArrayList<Item> expectedList = new ArrayList<>();
+        // create items
+        Item item1 = new Item("$12.13","A1S2D3F4G5","Xbox");
+        Item item2 = new Item("$70.00","J5H4G3K2L1","PS5");
+        Item item3 = new Item("$100.23","LPO0987UJH","Switch");
+
+        // add items to our expectedList
+        expectedList.add(item1);
+        expectedList.add(item2);
+        expectedList.add(item3);
+
+        // Path for my laptop
+        String path = "Test.txt";
+        // send path to method which returns a message
+        String output = TC.loadTSV(path);
+        // print output message which states whether the file was loaded successfully or not
+        System.out.println(output);
+
+        // counter to see how many items match our expected list
+        int counter = 0;
+
+        // for loop through our expected list and match items to global list
+        for(int i=0; i<expectedList.size(); i++) {
+            // check to see if value, serialNumber and Name equal each other
+            if(expectedList.get(i).value.equals(TC.InventoryList.get(i).value) &&
+                    expectedList.get(i).serialNumber.equals(TC.InventoryList.get(i).serialNumber) &&
+                    expectedList.get(i).name.equals(TC.InventoryList.get(i).name)) {
+                // raise counter if item at i equals for both expected and output
+                counter++;
+            }
+        }
+        assertEquals(counter, 3);
+    }
+
+    @Test
+    void TestingSavingToHTMLFile() {
+        Inventory_Controller TC = new Inventory_Controller();
+        // Create items to add to our global list
+        Item item1 = new Item("10","H5J4K3L298","Water");
+        Item item2 = new Item("20","PO0987UJHY","Planet");
+        Item item3 = new Item("24.99","MN9843MK45","Infinity Stone");
+        Item item4 = new Item("25","H1K5V6K3M7","DogeCoin");
+
+        // Add the items to the list
+        TC.InventoryList.add(item1);
+        TC.InventoryList.add(item2);
+        TC.InventoryList.add(item3);
+        TC.InventoryList.add(item4);
+
+        // create expected string
+        String expected = """
+                <h1>Inventory List</h1>
+                <table style="width:18%">
+                <tr>
+                <th>Value</th>
+                <th>Serial Number</th>
+                <th>Name</th>
+                </tr><tr>
+                <td>10</td>
+                <td>H5J4K3L298</td>
+                <td>Water</td>
+                </tr>
+                <tr>
+                <td>20</td>
+                <td>PO0987UJHY</td>
+                <td>Planet</td>
+                </tr>
+                <tr>
+                <td>24.99</td>
+                <td>MN9843MK45</td>
+                <td>Infinity Stone</td>
+                </tr>
+                <tr>
+                <td>25</td>
+                <td>H1K5V6K3M7</td>
+                <td>DogeCoin</td>
+                </tr>
+                </table>""";
+
+        // call method which returns the Inventory List as a string
+        String output = TC.saveHTML();
+        // Assert expected and output equals
+        assertEquals(expected,output);
+    }
+
+    @Test
+    void TestingLoadingAnHTMLFileToTheInventoryList() {
+        Inventory_Controller TC = new Inventory_Controller();
+        // Created expected ArrayList to compare with global list when loaded
+        ArrayList<Item> expectedList = new ArrayList<>();
+        // create items
+        Item item1 = new Item("$12.13","A1S2D3F4G5","Xbox");
+        Item item2 = new Item("$70.00","J5H4G3K2L1","PS5");
+        Item item3 = new Item("$100.23","LPO0987UJH","Switch");
+
+        // add items to our expectedList
+        expectedList.add(item1);
+        expectedList.add(item2);
+        expectedList.add(item3);
+
+        // Path for my laptop
+        String path = "Test.html";
+        // send path to method which returns a message
+        String output = TC.loadHTML(path);
+        // print output message which states whether the file was loaded successfully or not
+        System.out.println(output);
+
+        // counter to see how many items match our expected list
+        int counter = 0;
+
+        // for loop through our expected list and match items to global list
+        for(int i=0; i<expectedList.size(); i++) {
+            // check to see if value, serialNumber and Name equal each other
+            if(expectedList.get(i).value.equals(TC.InventoryList.get(i).value) &&
+                    expectedList.get(i).serialNumber.equals(TC.InventoryList.get(i).serialNumber) &&
+                    expectedList.get(i).name.equals(TC.InventoryList.get(i).name)) {
+                // raise counter if item at i equals for both expected and output
+                counter++;
+            }
+        }
+        assertEquals(counter, 3);
     }
 }

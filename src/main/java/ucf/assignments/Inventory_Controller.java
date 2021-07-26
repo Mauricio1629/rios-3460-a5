@@ -9,13 +9,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
+import java.io.*;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -65,11 +63,11 @@ public class Inventory_Controller implements Initializable {
     @FXML
     public TextField pathDisplay;
     @FXML
-    public CheckBox TSVCheckbox;
+    public RadioButton TSVRadioButton;
     @FXML
-    public CheckBox HTMLCheckbox;
+    public RadioButton HTMLRadioButton;
     @FXML
-    public CheckBox JSONCheckbox;
+    public ToggleGroup Group;
 
     @FXML
     public void addItemButtonClicked(ActionEvent actionEvent) {
@@ -155,10 +153,13 @@ public class Inventory_Controller implements Initializable {
     public void searchSerialNumberClicked(ActionEvent actionEvent) {
         // Get input in search display and change to upper case
         String search = searchDisplay.getText().toUpperCase();
+
         // send to method which returns a list of items that match the search string
         ArrayList<Item> searchedList = searchSerialNumber(search);
+
         // returned list is added to observable list
         addToObservableList(searchedList);
+
         // Clear the search display
         searchDisplay.clear();
         // clear edit displays
@@ -169,10 +170,13 @@ public class Inventory_Controller implements Initializable {
     public void searchNameClicked(ActionEvent actionEvent) {
         // Get input in search display and change to upper case
         String search = searchDisplay.getText().toUpperCase();
+
         // send to method which returns a list of items that match the search string
         ArrayList<Item> searchedList = searchName(search);
+
         // the returned list is added to observable list
         addToObservableList(searchedList);
+
         // Clear the search display
         searchDisplay.clear();
         // clear edit displays
@@ -180,33 +184,86 @@ public class Inventory_Controller implements Initializable {
     }
 
     @FXML
-    public void saveFileClicked(ActionEvent actionEvent) {
-        // Get string in path display
-        // Get the checkbox clicked and make sure only one is selected
-            // or disable the others the moment one is clicked
-        // If TSV checkbox clicked send to saveTSV method
-        saveTSV();
-        // If HTML checkbox clicked send to saveHTML
-        saveHTML();
-        // if JSON checkbox clicked send to saveJSON
-        saveJSON();
-        // Method returns string and we add here
-        // Clear display
+    public void saveFileClicked(ActionEvent actionEvent) throws IOException {
+        // get the path from the pathDisplay
+        String path = pathDisplay.getText();
+
+        // If TSV radiobutton is selected
+        if(TSVRadioButton.isSelected()) {
+            // call for method which returns a string with the InventoryList written within
+            String exportTSV = saveTSV();
+            // try/catch to write file
+            try{
+                // declare fileWriter and add .txt to the path
+                FileWriter fileWriter = new FileWriter(path + ".txt");
+                // write the returned string to the file
+                fileWriter.write(exportTSV);
+                // close the fileWriter
+                fileWriter.close();
+                // Write message in pathDisplay to let the user know that the file was created
+                pathDisplay.setText("File Saved!");
+            } catch (Exception e) {
+                // If saving was not possible set an error text
+                pathDisplay.setText("Error!");
+            }
+            // if HTML RadioButton is selected
+        } else if(HTMLRadioButton.isSelected()){
+            // call for method which returns a string with the InventoryList written within
+            String exportHTML = saveHTML();
+            // Try/catch
+            try {
+                // declare fileWriter and add html to the path
+                FileWriter fileWriter = new FileWriter(path + ".html");
+                // write the returned string to the file
+                fileWriter.write(exportHTML);
+                // close the fileWriter
+                fileWriter.close();
+                // Write message in pathDisplay to let the user know that the file was created
+                pathDisplay.setText("File Saved!");
+            } catch (Exception e) {
+                // If saving was not possible set an error text
+                pathDisplay.setText("Error!");
+            }
+        } else {
+            // No radiobutton was selected so we give error message
+            pathDisplay.setText("Error - Nothing Saved!");
+        }
+        // Clear the radio buttons
+        TSVRadioButton.setSelected(false);
+        HTMLRadioButton.setSelected(false);
     }
 
     @FXML
-    public void loadFileClicked(ActionEvent actionEvent) {
+    public void loadFileClicked(ActionEvent actionEvent) throws IOException {
         // Get string in path display
-        // Get the checkbox clicked and make sure only one is selected
-            // or disable the others the moment one is clicked
-        // If TSV checkbox clicked send to loadTSV method
-        loadTSV();
-        // If HTML checkbox clicked send to loadHTML method
-        loadHTML();
-        // if JSON checkbox clicked send to loadJSON method
-        loadJSON();
-        // Method returns string and we add here
-        // Clear display
+        String path = pathDisplay.getText();
+        // initialize string for what the methods return
+        String message;
+
+        // if tsv radio button is selected
+        if(TSVRadioButton.isSelected()) {
+            // give path to method which returns a string stating if the file was loaded successfully or not
+            message = loadTSV(path);
+            // set message to display
+            pathDisplay.setText(message);
+            // If HTML radio button clicked send path to loadHTML method
+        } else if (HTMLRadioButton.isSelected()){
+            // give path to method which returns a string stating if the file was loaded successfully or not
+            message = loadHTML(path);
+            // set message to display
+            pathDisplay.setText(message);
+         // else no radio button was selected
+        } else {
+            // set a error message in the pathDisplay
+            pathDisplay.setText("Error - Nothing Loaded!");
+        }
+
+        // updated the observable list to shows new loaded items
+        addToObservableList(InventoryList);
+
+        // Clear radio buttons
+        TSVRadioButton.setSelected(false);
+        HTMLRadioButton.setSelected(false);
     }
 
     @FXML
@@ -215,12 +272,15 @@ public class Inventory_Controller implements Initializable {
         int index = inventoryTableView.getSelectionModel().getSelectedIndex();
         // get the serial number of the selected index
         String serialNumber = inventoryTableView.getItems().get(index).serialNumber;
+
         // send the serialNumber of the selected item to be deleted in the method
         deleteItem(serialNumber);
+
         // get the item that was deleted from the Inventory list
         Item item = observableList.get(index);
         // delete the item from the observable list
         observableList.remove(item);
+
         // clear the displays
         clearDisplays(2);
     }
@@ -231,6 +291,7 @@ public class Inventory_Controller implements Initializable {
         int itemIndex = inventoryTableView.getSelectionModel().getSelectedIndex();
         // pull the selected item out the list
         Item item = observableList.get(itemIndex);
+
         // set its values to the edit displays
         editValueDisplay.setText(item.value.substring(1));
         editSerialNumberDisplay.setText(item.serialNumber);
@@ -303,22 +364,106 @@ public class Inventory_Controller implements Initializable {
         return searchList;
     }
 
-    public void saveJSON() {
+    public String saveHTML() {
+        // create the stringBuilder where we will append everything to
+        StringBuilder stringBuilder = new StringBuilder();
+        // append the heading, table style, and the title for the columns in the table
+        stringBuilder.append("<h1>Inventory List</h1>\n<table style=\"width:18%\">")
+                .append("\n<tr>\n<th>Value</th>\n<th>Serial Number</th>\n<th>Name</th>\n</tr>");
+        // loop through the global list
+        for (Item item : InventoryList) {
+            // append <tr> at the beginning of a line for an item
+            stringBuilder.append("<tr>\n");
+            // append the value, serialNumber, and name to the string builder
+            stringBuilder.append("<td>").append(item.value).append("</td>\n");
+            stringBuilder.append("<td>").append(item.serialNumber).append("</td>\n");
+            stringBuilder.append("<td>").append(item.name).append("</td>\n");
+            // finish the line with </tr>
+            stringBuilder.append("</tr>\n");
+        }
+        // when there is not more items we close the table
+        stringBuilder.append("</table>");
+        // return the stringBuilder as as string
+        return stringBuilder.toString();
     }
 
-    public void saveHTML() {
+    public String saveTSV() {
+        // create stringBuilder to append items within the inventory list
+        StringBuilder exportText = new StringBuilder();
+        // append the title for the columns
+        exportText.append("Value\tSerial Number\tName");
+        // for loop through the inventory list
+        for (Item item : InventoryList) {
+            // append value, serialNumber, and name separated by tab space for each item on the list
+            exportText.append("\n").append(item.value).append("\t")
+                    .append(item.serialNumber).append("\t").append(item.name);
+        }
+        // return the stringBuilder as String
+        return exportText.toString();
     }
 
-    public void saveTSV() {
+    public String loadHTML(String path) {
+        // declare string that will read the file
+        String line;
+        // try/catch
+        try {
+            // initialize bufferedReader
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
+            // while loop that continues until there is no more to read
+            while ((line = bufferedReader.readLine()) != null){
+                // if the line contains <td> we pull the information within the next 3 lines
+                if(line.contains("<td>")) {
+                    // read the line avoiding <td> and </td> inside of it and give it to a string
+                    String value = line.substring(4,line.length()-5);
+                    // read the next line and repeat 2 more times
+                    line = bufferedReader.readLine();
+                    String serialNumber = line.substring(4,line.length()-5);
+                    line = bufferedReader.readLine();
+                    String name = line.substring(4,line.length()-5);
+                    // when the 3 variables are collected we create a new item and add to the inventory list
+                    InventoryList.add(new Item(value,serialNumber,name));
+                }
+            }
+            // message for gui showing that file was loaded
+            line = "File Loaded!";
+        } catch (Exception e) {
+            // if there was a problem give error
+            line = "Error!";
+        }
+        // return the message for the gui
+        return line;
     }
 
-    public void loadJSON() {
-    }
-
-    public void loadHTML() {
-    }
-
-    public void loadTSV() {
+    public String loadTSV(String path) throws IOException {
+        // declare array of strings save data from a single string
+        String[] wordsArray;
+        // declare string to read file
+        String line;
+        // try/catch
+        try {
+            // declare bufferedReader and assign path to it
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
+            // read the first line but do nothing with it because it is only titles
+            bufferedReader.readLine();
+            // while loop that stops when file is done
+            while((line = bufferedReader.readLine()) != null) {
+                // split the line by tab and add each word to the array
+                wordsArray = line.split("\t");
+                // array 0 - 2 has the variables for an item and we assign them to a string
+                String value = wordsArray[0];
+                String serialNumber = wordsArray[1];
+                String name = wordsArray[2];
+                // create a new item and add to the inventory list
+                InventoryList.add(new Item(value,serialNumber,name));
+            }
+            // message to send back showing the file was loaded
+            line = "File Loaded!";
+        } catch (Exception e) {
+            // error message in case the file was not loaded
+            line = "Error!";
+        }
+        // return the message
+        return line;
     }
 
     public void deleteItem(String serialNumber) {
